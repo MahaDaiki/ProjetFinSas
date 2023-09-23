@@ -13,20 +13,20 @@ typedef struct {
 	int ID;
 	struct tm deadline;
 } Task;
-
+int n = 0;
 // Function to add tasks
 int AddTasks(Task tasks[], int n) {
+	int tasknum;
     printf("\t\tHow many tasks do you want to enter?\n");
-    int numTasks;
-    scanf("%d", &numTasks);
+    scanf("%d", &tasknum);
 
-    if (n + numTasks > 100) {
+    if (n + tasknum > 100) {
         printf("Error: the maximum number of tasks (100).\n");
         return n;
     }
 
     printf("Enter your tasks:\n");
-    for (int i = n; i < n + numTasks ; i++) {
+    for (int i = n; i < tasknum + n; i++) {
         tasks[i].ID = i + 1; //the task ID
         printf("Task %d:\n", tasks[i].ID);
         printf("Title: ");
@@ -39,10 +39,18 @@ int AddTasks(Task tasks[], int n) {
 	printf("Invalid status. Setting status to 'To Do'.\n");
 	tasks[i].status = Status_ToDo;
 	}
-	printf("Deadline 'DD/MM/YY':\n");
+	 if ( tasks[i].status == 0 ){
+                        printf("\t\t\tTo Do\n");}
+                else if ( tasks[i].status == 1 ){
+                        printf("\t\t\tIn Progress\n");}
+                else if ( tasks[i].status == 2 ){
+                        printf("\t\t\tCompleted\n");}
+                else {
+                        printf("\t\t\tInvalid\n");}
+	printf("Deadline 'DD/MM/YYYY':\n");
 	scanf("%d/%d/%d",&tasks[i].deadline.tm_mday, &tasks[i].deadline.tm_mon, &tasks[i].deadline.tm_year);
     }
-	n+= numTasks;
+	n+= tasknum;
     printf("=====Task Added=====\n");
     return n;
 }
@@ -100,10 +108,10 @@ void ModifyTask(Task tasks[], int n) {
 // Function to display the tasks
 void Display(Task tasks[], int n) {
     for (int i = 0; i < n; i++) {
-        printf("> Task %d:\n", tasks[i].ID);
-        printf("> Title: %s\n", tasks[i].title);
-        printf("> Description: %s\n", tasks[i].description);
-        printf("> Status (0 for 'To Do', 1 for 'In Progress', 2 for 'Completed'): %d\n", tasks[i].status);
+        printf("  > Task %d:\n", tasks[i].ID);
+        printf("  > Title: %s\n", tasks[i].title);
+        printf("  > Description: %s\n", tasks[i].description);
+        printf("  > Status : %d\n", tasks[i].status);
 		if ( tasks[i].status == 0 ){
 			printf("\t\t\tTo Do\n");}
 		else if ( tasks[i].status == 1 ){
@@ -112,7 +120,7 @@ void Display(Task tasks[], int n) {
 			printf("\t\t\tCompleted\n");}
 		else {
 			printf("\t\t\tInvalid\n");}
-	printf("Deadline: %02d/%02d/%04d\n", tasks[i].deadline.tm_mday, tasks[i].deadline.tm_mon , tasks[i].deadline.tm_year);
+	printf("  >Deadline: %02d/%02d/%04d\n", tasks[i].deadline.tm_mday, tasks[i].deadline.tm_mon , tasks[i].deadline.tm_year);
     }
 }
 
@@ -139,7 +147,14 @@ void Search(Task tasks[], char s2[100], int n) {
         if (strcmp(s2, tasks[i].title) == 0) {
             found = 1;
             printf("Task %d: %s\n %s. '%d'\n", tasks[i].ID, tasks[i].title, tasks[i].description, tasks[i].status);
-        }
+      			  if ( tasks[i].status == 0 ){
+                        printf("\t\t\tTo Do\n");}
+                else if ( tasks[i].status == 1 ){
+                        printf("\t\t\tIn Progress\n");}
+                else if ( tasks[i].status == 2 ){
+                        printf("\t\t\tCompleted\n");}
+               
+ }
     }
 
     if (!found) {
@@ -157,7 +172,14 @@ void Search1(Task tasks[], int s1, int n) {
         if (tasks[i].ID == s1) {
             found = 1;
             printf("Task %d: %s\n %s. '%d'\n", tasks[i].ID, tasks[i].title, tasks[i].description, tasks[i].status);
-        }
+       			 if ( tasks[i].status == 0 ){
+                        printf("\t\t\tTo Do\n");}
+                else if ( tasks[i].status == 1 ){
+                        printf("\t\t\tIn Progress\n");}
+                else if ( tasks[i].status == 2 ){
+                        printf("\t\t\tCompleted\n");}
+
+	 }
     }
 
     if (!found) {
@@ -191,39 +213,44 @@ int Delete(Task tasks[], int d, int n) {
     return n - 1;
 }
 //	days remaining
+Task taches[100];
 void daysRemaining(Task tasks[], int n) {
-    time_t nw;
-    time(&nw);
-    struct tm currenttime;
-    localtime_r(&nw, &currenttime);
-
+    time_t now;
+    time(&now);
     double srem;
     int drem, hrem;
-
-    for (int i = 0; i < n; i++) {
+    
+   for (int i = 0; i < n; i++) {
+        
         struct tm deadline = tasks[i].deadline;
         deadline.tm_year -= 1900;
         deadline.tm_mon -= 1;
-
         time_t taskTime = mktime(&deadline);
-        srem = difftime(taskTime, nw);
-        hrem = (int)(srem / (60 * 60 * 24));
-        drem = hrem / 24;
 
-        printf("      _Task ID:%d\n", tasks[i].ID);
-        printf("      _Task Title:%s\n", tasks[i].title);
-        printf("Days remaining: %d\n", drem);
-        printf("Hours remaining: %ld\n", hrem);
-        printf("Seconds remaining: %ld\n", (long)srem);
-        printf("=======================\n");
-    }
-	
+        if (taskTime == -1) {
+            printf("Error converting deadline to time.\n");
+            continue;
+        }
+
+
+
+        srem = difftime(taskTime, now);
+        int mrem = (int)(srem / (60));
+        int hrem = (int)(srem / (60 * 60));
+        drem = (int)(srem / (60 * 60 * 24));
+    
+        printf("> Task %d:\n", tasks[i].ID);
+        printf("> Title: %s\n", tasks[i].title);
+        printf("> days remaining : %d\n", drem);
+        printf("> hours remaining: %d\n", hrem);
+}
+
 }
 
 // code start
 int main() {
     int choice;
-    int n = 0;
+    
     Task tasks[100];
     while (1) {
         printf("\t\t\t=========Welcome to your 'To Do list'=========\n");
@@ -250,7 +277,7 @@ int main() {
             case 3:
                 // Display tasks
 		int sort;
-		printf("-----Show tasks:-----\n1-Sort alphabetically.\n2-Sort by Deadline.\n3-Deadline less than 3days.\n");
+		printf("   \t\t-----Show tasks:-----\n1-Sort alphabetically.\n2-Sort by Deadline.\n3-Deadline less than 3days.\n");
 		scanf("%d",&sort);
 		if ( sort == 1){
                 	sorting(tasks, n);
@@ -271,7 +298,8 @@ int main() {
 			Display(tasks, n);
 			}
 		else if ( sort == 3){
-			void daysRemaining(tasks,n);
+				
+			daysRemaining(tasks,n);
 				}
 		else {
 			printf("Invalid choice");
@@ -302,7 +330,7 @@ int main() {
             case 6:
                 // Statistics
 		int t;
-		printf("\t 1-Total tasks.\n\t  2-Total tasks completed and incompleted.\n\t 3-Days Remaining.\n");
+		printf("\t 1-Total tasks.\n\t 2-Total tasks completed and incompleted.\n\t 3-Days Remaining.\n");
 		scanf("%d",&t);
 		if ( t == 1 ){
 			printf("You have %d task totally ", n);
@@ -334,16 +362,10 @@ int main() {
 		}
 		}
 		if ( t == 3 ){
-			//int drem,hrem,srem;
-			for ( int i = 0; i<n;i++){
-			printf("\t\t---Task %d----\n",tasks[i].ID);
-			 void daysRemaining(tasks,n);
-			/*printf("days remaining %d ",drem);
-			printf("hours remaining %ld ",hrem);
-			printf("Seconds remaining %ld ",srem);*/
-					}
-				}
+		printf("\t            \t======Tasks======\n");
+            daysRemaining(tasks,n);
                 break;
+            }
             case 7:
                // Exit
                 return 0;
