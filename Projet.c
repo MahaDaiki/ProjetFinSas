@@ -213,7 +213,7 @@ int Delete(Task tasks[], int d, int n) {
     return n - 1;
 }
 //	days remaining
-Task taches[100];
+
 void daysRemaining(Task tasks[], int n) {
     time_t now;
     time(&now);
