@@ -209,7 +209,7 @@ int Delete(Task tasks[], int d, int n) {
     if (!found) {
         printf("Task with ID %d is not found.\n", d);
     }
-
+	
     return n - 1;
 }
 //	days remaining
@@ -231,9 +231,6 @@ void daysRemaining(Task tasks[], int n) {
             printf("Error converting deadline to time.\n");
             continue;
         }
-
-
-
         srem = difftime(taskTime, now);
         int mrem = (int)(srem / (60));
         int hrem = (int)(srem / (60 * 60));
