@@ -243,6 +243,43 @@ void daysRemaining(Task tasks[], int n) {
 }
 
 }
+//3days remaining 
+void threedays(Task tasks[], int n) {
+    time_t now;
+    time(&now);
+    double srem;
+    int drem, hrem;
+    
+   for (int i = 0; i < n; i++) {
+        
+        struct tm deadline = tasks[i].deadline;
+        deadline.tm_year -= 1900;
+        deadline.tm_mon -= 1;
+        time_t taskTime = mktime(&deadline);
+
+        if (taskTime == -1) {
+            printf("Error converting deadline to time.\n");
+            continue;
+        }
+
+        srem = difftime(taskTime, now);
+        
+        int mrem = (int)(srem / (60));
+        int hrem = (int)(srem / (60 * 60));
+        drem = (int)(srem / (60 * 60 * 24));
+        
+        if ( drem <= 3){ //3days
+        printf("> Task : %d\n", tasks[i].ID);
+        printf("> Title: %s\n", tasks[i].title);
+        printf("> days remaining : %d\n", drem);
+        printf("> hours remaining: %d\n", hrem);
+        }
+	else {
+		printf("======NO TASK AVAILABLE=====\n");
+}
+}
+
+}
 
 // code start
 int main() {
@@ -296,7 +333,7 @@ int main() {
 			}
 		else if ( sort == 3){
 				
-			daysRemaining(tasks,n);
+			threedays(tasks, n);
 				}
 		else {
 			printf("Invalid choice");
@@ -361,8 +398,9 @@ int main() {
 		if ( t == 3 ){
 		printf("\t            \t======Tasks======\n");
             daysRemaining(tasks,n);
-                break;
-            }
+              }
+		  break;
+            
             case 7:
                // Exit
                 return 0;
