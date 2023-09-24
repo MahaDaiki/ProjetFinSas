@@ -404,6 +404,7 @@ int main() {
             case 7:
                // Exit
                 return 0;
+		break;
             default:
                 printf("Invalid choice.\n");
                 break;
